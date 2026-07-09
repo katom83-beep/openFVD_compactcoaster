@@ -63,7 +63,7 @@ jobs:
       run: find /mingw64 -name "qmake*" 2>/dev/null || echo "pas trouve dans mingw64"
 
     - name: Run qmake
-      run: /mingw64/qt5-static/bin/qmake fvd.pro CONFIG+=release || qmake5 fvd.pro CONFIG+=release || /mingw64/bin/qmake fvd.pro CONFIG+=release
+      run: /mingw64/bin/qmake-qt5 fvd.pro CONFIG+=release
 
     - name: Build
       run: make -j4 || mingw32-make -j4
