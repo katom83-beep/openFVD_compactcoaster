@@ -27,25 +27,28 @@ jobs:
         echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" >> $env:GITHUB_ENV
       shell: pwsh
 
-    - name: Build lib3ds from source
+    - name: Download and build lib3ds
       run: |
-        git clone https://github.com/AF83/lib3ds.git lib3ds-src --depth=1
-        cd lib3ds-src
+        $url = "https://sourceforge.net/projects/lib3ds/files/lib3ds/1.3.0/lib3ds-1.3.0.zip/download"
+        Invoke-WebRequest -Uri $url -OutFile lib3ds.zip -UseBasicParsing
+        Expand-Archive lib3ds.zip -DestinationPath .
+        Push-Location lib3ds-1.3.0
         cmake . -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="C:/lib3ds"
         mingw32-make -j4
         mingw32-make install
+        Pop-Location
       shell: pwsh
 
     - name: Patch fvd.pro with CI paths
       run: |
         $vcpkg = $env:VCPKG_INSTALLATION_ROOT
         $pro = Get-Content fvd.pro -Raw
-        $pro = $pro -replace 'INCLUDEPATH \+= "C:\\Development\\Libraries\\glew[^"]*"', "INCLUDEPATH += `"$vcpkg\installed\x64-windows\include`""
-        $pro = $pro -replace 'INCLUDEPATH \+= "C:\\Development\\Libraries\\glm[^"]*"', "INCLUDEPATH += `"$vcpkg\installed\x64-windows\include`""
+        $pro = $pro -replace 'INCLUDEPATH \+= "C:\\Development\\Libraries\\glew[^"]*"',   "INCLUDEPATH += `"$vcpkg\installed\x64-windows\include`""
+        $pro = $pro -replace 'INCLUDEPATH \+= "C:\\Development\\Libraries\\glm[^"]*"',    "INCLUDEPATH += `"$vcpkg\installed\x64-windows\include`""
         $pro = $pro -replace 'INCLUDEPATH \+= "C:\\Development\\Libraries\\lib3ds[^"]*"', "INCLUDEPATH += `"C:\lib3ds\include`""
         $pro = $pro -replace 'LIBS \+= "C:\\Development\\Libraries\\glew[^"]*glew32\.lib"', "LIBS += `"$vcpkg\installed\x64-windows\lib\glew32.lib`""
         $pro = $pro -replace 'LIBS \+= "C:\\Development\\Libraries\\glew[^"]*glew32\.dll"', "LIBS += `"$vcpkg\installed\x64-windows\bin\glew32.dll`""
-        $pro = $pro -replace 'LIBS \+= "C:\\Development\\Libraries\\lib3ds[^"]*"', "LIBS += `"C:\lib3ds\lib\lib3ds.lib`""
+        $pro = $pro -replace 'LIBS \+= "C:\\Development\\Libraries\\lib3ds[^"]*"',          "LIBS += `"C:\lib3ds\lib\lib3ds.lib`""
         Set-Content fvd.pro $pro
       shell: pwsh
 
@@ -59,9 +62,9 @@ jobs:
 
     - name: Deploy Qt DLLs
       run: |
-        mkdir deploy
-        copy release\FVD.exe deploy\
-        copy $env:VCPKG_INSTALLATION_ROOT\installed\x64-windows\bin\glew32.dll deploy\
+        New-Item -ItemType Directory -Force -Path deploy
+        Copy-Item release\FVD.exe deploy\
+        Copy-Item "$env:VCPKG_INSTALLATION_ROOT\installed\x64-windows\bin\glew32.dll" deploy\
         windeployqt --release --no-translations deploy\FVD.exe
       shell: pwsh
 
