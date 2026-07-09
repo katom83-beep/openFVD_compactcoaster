@@ -26,44 +26,21 @@ jobs:
           mingw-w64-x86_64-qt5
           mingw-w64-x86_64-glew
           mingw-w64-x86_64-glm
-          mingw-w64-x86_64-lib3ds
           mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-gcc
           make
+          git
+          unzip
+
+    - name: Build lib3ds from source
+      run: |
+        curl -L "https://github.com/dspinellis/lib3ds/archive/refs/heads/master.zip" -o lib3ds.zip
+        unzip lib3ds.zip
+        cd lib3ds-master
+        cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/mingw64 -DBUILD_SHARED_LIBS=OFF
+        make -j4
+        make install
 
     - name: Patch fvd.pro for MSYS2
       run: |
-        sed -i 's|INCLUDEPATH += "C:\\Development\\Libraries\\glew[^"]*"|INCLUDEPATH += "/mingw64/include"|g' fvd.pro
-        sed -i 's|INCLUDEPATH += "C:\\Development\\Libraries\\glm[^"]*"|INCLUDEPATH += "/mingw64/include"|g' fvd.pro
-        sed -i 's|INCLUDEPATH += "C:\\Development\\Libraries\\lib3ds[^"]*"|INCLUDEPATH += "/mingw64/include"|g' fvd.pro
-        sed -i 's|LIBS += "C:\\Development\\Libraries\\glew[^"]*glew32\.lib"||g' fvd.pro
-        sed -i 's|LIBS += "C:\\Development\\Libraries\\glew[^"]*glew32\.dll"||g' fvd.pro
-        sed -i 's|LIBS += "C:\\Development\\Libraries\\lib3ds[^"]*"||g' fvd.pro
-        sed -i 's|-lOpenGL32|-lopengl32|g' fvd.pro
-        sed -i 's|-lGlU32|-lglu32|g' fvd.pro
-        echo "" >> fvd.pro
-        echo "LIBS += -lglew32 -l3ds" >> fvd.pro
-        cat fvd.pro | grep -E "INCLUDEPATH|LIBS"
-
-    - name: Run qmake
-      run: qmake fvd.pro CONFIG+=release
-
-    - name: Build
-      run: make -j4
-
-    - name: Collect files
-      run: |
-        mkdir -p deploy
-        cp release/FVD.exe deploy/
-        cp /mingw64/bin/glew32.dll deploy/
-        cp /mingw64/bin/lib3ds*.dll deploy/ 2>/dev/null || true
-        windeployqt --release --no-translations deploy/FVD.exe
-        cp background.png metal.png metalnormals.png deploy/
-        cp -r shaders deploy/
-        cp -r sky deploy/
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: FVD-plus-plus-monorail450-windows
-        path: deploy/
-        retention-days: 30
+        sed -i 's|INCLUDEPATH +=
