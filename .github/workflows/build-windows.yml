@@ -76,6 +76,9 @@ jobs:
     - name: Build
       run: make -j4
 
+    - name: Find windeployqt
+      run: find /mingw64 -name "windeployqt*" 2>/dev/null
+
     - name: Collect files
       run: |
         mkdir -p deploy
