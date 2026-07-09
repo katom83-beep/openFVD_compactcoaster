@@ -84,7 +84,7 @@ jobs:
         mkdir -p deploy
         cp release/FVD.exe deploy/
         cp /mingw64/bin/glew32.dll deploy/
-        /mingw64/bin/windeployqt-qt5 --release --no-translations deploy/FVD.exe
+        /mingw64/bin/windeployqt-qt5 --release --no-translations deploy/FVD.exe || true
         cp background.png metal.png metalnormals.png deploy/
         cp -r shaders deploy/
         cp -r sky deploy/
