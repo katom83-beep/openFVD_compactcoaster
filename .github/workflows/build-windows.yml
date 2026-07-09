@@ -36,11 +36,11 @@ jobs:
       run: |
         curl -L "https://github.com/dspinellis/lib3ds/archive/refs/heads/master.zip" -o lib3ds.zip
         unzip lib3ds.zip
-        cd lib3ds-master
-        autoreconf -fi
-        ./configure --prefix=/mingw64 --disable-shared --enable-static
-        make -j4
-        make install
+        cd lib3ds-master/src
+        gcc -c *.c -I. -O2
+        ar rcs /mingw64/lib/lib3ds.a *.o
+        cp lib3ds.h /mingw64/include/
+        echo "lib3ds compilé avec succès"
 
     - name: Patch fvd.pro for MSYS2
       run: |
