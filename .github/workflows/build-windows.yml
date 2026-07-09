@@ -88,6 +88,9 @@ jobs:
         cp background.png metal.png metalnormals.png deploy/
         cp -r shaders deploy/
         cp -r sky deploy/
+        cp /mingw64/bin/libgcc_s_seh-1.dll deploy/ || true
+        cp /mingw64/bin/libstdc++-6.dll deploy/ || true
+        cp /mingw64/bin/libwinpthread-1.dll deploy/ || true
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
