@@ -3,18 +3,16 @@ name: Build FVD++ Windows
 on:
   push:
     branches: [ master, main ]
-  workflow_dispatch:   # permet de lancer manuellement depuis l'interface GitHub
+  workflow_dispatch:
 
 jobs:
   build-windows:
     runs-on: windows-latest
 
     steps:
-    # ── 1. Récupérer le code ──────────────────────────────────────────────────
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # ── 2. Installer Qt5 ─────────────────────────────────────────────────────
     - name: Install Qt5
       uses: jurplel/install-qt-action@v3
       with:
@@ -22,55 +20,43 @@ jobs:
         host: 'windows'
         target: 'desktop'
         arch: 'win64_mingw81'
-        modules: ''
 
-    # ── 3. Installer GLEW via vcpkg ───────────────────────────────────────────
     - name: Install GLEW and GLM via vcpkg
       run: |
-        vcpkg install glew:x64-windows glm:x64-windows lib3ds:x64-windows
+        vcpkg install glew:x64-windows glm:x64-windows
         echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" >> $env:GITHUB_ENV
       shell: pwsh
 
-    # ── 4. Adapter fvd.pro pour les chemins CI ────────────────────────────────
+    - name: Build lib3ds from source
+      run: |
+        git clone https://github.com/AF83/lib3ds.git lib3ds-src --depth=1
+        cd lib3ds-src
+        cmake . -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="C:/lib3ds"
+        mingw32-make -j4
+        mingw32-make install
+      shell: pwsh
+
     - name: Patch fvd.pro with CI paths
       run: |
         $vcpkg = $env:VCPKG_INSTALLATION_ROOT
-        $glew_inc = "$vcpkg\installed\x64-windows\include"
-        $glew_lib = "$vcpkg\installed\x64-windows\lib\glew32.lib"
-        $glew_dll = "$vcpkg\installed\x64-windows\bin\glew32.dll"
-        $glm_inc  = "$vcpkg\installed\x64-windows\include"
-        $lib3ds_inc = "$vcpkg\installed\x64-windows\include"
-        $lib3ds_lib = "$vcpkg\installed\x64-windows\lib\lib3ds.lib"
-
-        # Lire le fichier
         $pro = Get-Content fvd.pro -Raw
-
-        # Remplacer les chemins Windows hardcodés par les chemins vcpkg
-        $pro = $pro -replace 'INCLUDEPATH \+= "C:\\\\Development\\\\Libraries\\\\glew[^"]*"', "INCLUDEPATH += `"$glew_inc`""
-        $pro = $pro -replace 'INCLUDEPATH \+= "C:\\\\Development\\\\Libraries\\\\glm[^"]*"', "INCLUDEPATH += `"$glm_inc`""
-        $pro = $pro -replace 'INCLUDEPATH \+= "C:\\\\Development\\\\Libraries\\\\lib3ds[^"]*"', "INCLUDEPATH += `"$lib3ds_inc`""
-        $pro = $pro -replace 'LIBS \+= "C:\\\\Development\\\\Libraries\\\\glew[^"]*glew32\.lib"', "LIBS += `"$glew_lib`""
-        $pro = $pro -replace 'LIBS \+= "C:\\\\Development\\\\Libraries\\\\glew[^"]*glew32\.dll"', "LIBS += `"$glew_dll`""
-        $pro = $pro -replace 'LIBS \+= "C:\\\\Development\\\\Libraries\\\\lib3ds[^"]*"', "LIBS += `"$lib3ds_lib`""
-
+        $pro = $pro -replace 'INCLUDEPATH \+= "C:\\Development\\Libraries\\glew[^"]*"', "INCLUDEPATH += `"$vcpkg\installed\x64-windows\include`""
+        $pro = $pro -replace 'INCLUDEPATH \+= "C:\\Development\\Libraries\\glm[^"]*"', "INCLUDEPATH += `"$vcpkg\installed\x64-windows\include`""
+        $pro = $pro -replace 'INCLUDEPATH \+= "C:\\Development\\Libraries\\lib3ds[^"]*"', "INCLUDEPATH += `"C:\lib3ds\include`""
+        $pro = $pro -replace 'LIBS \+= "C:\\Development\\Libraries\\glew[^"]*glew32\.lib"', "LIBS += `"$vcpkg\installed\x64-windows\lib\glew32.lib`""
+        $pro = $pro -replace 'LIBS \+= "C:\\Development\\Libraries\\glew[^"]*glew32\.dll"', "LIBS += `"$vcpkg\installed\x64-windows\bin\glew32.dll`""
+        $pro = $pro -replace 'LIBS \+= "C:\\Development\\Libraries\\lib3ds[^"]*"', "LIBS += `"C:\lib3ds\lib\lib3ds.lib`""
         Set-Content fvd.pro $pro
-        Write-Host "fvd.pro patché avec succès"
-        Get-Content fvd.pro | Select-String "INCLUDEPATH|LIBS"
       shell: pwsh
 
-    # ── 5. Générer le Makefile avec qmake ────────────────────────────────────
     - name: Run qmake
-      run: |
-        qmake fvd.pro CONFIG+=release
+      run: qmake fvd.pro CONFIG+=release
       shell: cmd
 
-    # ── 6. Compiler ───────────────────────────────────────────────────────────
-    - name: Build with mingw32-make
-      run: |
-        mingw32-make -j4
+    - name: Build
+      run: mingw32-make -j4
       shell: cmd
 
-    # ── 7. Copier les DLL Qt nécessaires (windeployqt) ───────────────────────
     - name: Deploy Qt DLLs
       run: |
         mkdir deploy
@@ -79,7 +65,6 @@ jobs:
         windeployqt --release --no-translations deploy\FVD.exe
       shell: pwsh
 
-    # ── 8. Copier les ressources nécessaires au runtime ───────────────────────
     - name: Copy runtime resources
       run: |
         copy background.png deploy\
@@ -89,8 +74,7 @@ jobs:
         xcopy sky deploy\sky\ /E /I /Q
       shell: cmd
 
-    # ── 9. Publier l'artefact téléchargeable ─────────────────────────────────
-    - name: Upload FVD++ executable
+    - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: FVD-plus-plus-monorail450-windows
