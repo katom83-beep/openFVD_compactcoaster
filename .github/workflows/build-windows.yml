@@ -33,6 +33,13 @@ jobs:
           unzip
           python3
 
+    - name: Install compatible GLM version
+      run: |
+        pacman -R --noconfirm mingw-w64-x86_64-glm || true
+        curl -L "https://github.com/g-truc/glm/archive/refs/tags/0.9.9.8.zip" -o glm.zip
+        unzip glm.zip
+        cp -r glm-0.9.9.8/glm /mingw64/include/
+
     - name: Build lib3ds from source
       run: |
         curl -L "https://github.com/dspinellis/lib3ds/archive/refs/heads/master.zip" -o lib3ds.zip
@@ -56,6 +63,7 @@ jobs:
         content = content.replace('-lOpenGL32', '-lopengl32')
         content = content.replace('-lGlU32', '-lglu32')
         content += '\nLIBS += -lglew32 -l3ds\n'
+        content += '\nDEFINES += GLM_ENABLE_EXPERIMENTAL\n'
         open('fvd.pro', 'w').write(content)
         print('fvd.pro patche avec succes')
         "
