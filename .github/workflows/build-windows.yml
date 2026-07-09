@@ -31,6 +31,7 @@ jobs:
           make
           git
           unzip
+          python3
 
     - name: Build lib3ds from source
       run: |
@@ -40,13 +41,12 @@ jobs:
         gcc -c *.c -I. -O2
         ar rcs /mingw64/lib/lib3ds.a *.o
         cp lib3ds.h /mingw64/include/
-        echo "lib3ds compilé avec succès"
 
     - name: Patch fvd.pro for MSYS2
       run: |
         python3 -c "
-        content = open('fvd.pro', 'r').read()
         import re
+        content = open('fvd.pro', 'r').read()
         content = re.sub(r'INCLUDEPATH \+= \"C:\\\\Development\\\\Libraries\\\\glew[^\"]*\"', 'INCLUDEPATH += /mingw64/include', content)
         content = re.sub(r'INCLUDEPATH \+= \"C:\\\\Development\\\\Libraries\\\\glm[^\"]*\"', 'INCLUDEPATH += /mingw64/include', content)
         content = re.sub(r'INCLUDEPATH \+= \"C:\\\\Development\\\\Libraries\\\\lib3ds[^\"]*\"', 'INCLUDEPATH += /mingw64/include', content)
@@ -59,3 +59,26 @@ jobs:
         open('fvd.pro', 'w').write(content)
         print('fvd.pro patche avec succes')
         "
+
+    - name: Run qmake
+      run: qmake fvd.pro CONFIG+=release
+
+    - name: Build
+      run: make -j4
+
+    - name: Collect files
+      run: |
+        mkdir -p deploy
+        cp release/FVD.exe deploy/
+        cp /mingw64/bin/glew32.dll deploy/
+        windeployqt --release --no-translations deploy/FVD.exe
+        cp background.png metal.png metalnormals.png deploy/
+        cp -r shaders deploy/
+        cp -r sky deploy/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: FVD-plus-plus-monorail450-windows
+        path: deploy/
+        retention-days: 30
