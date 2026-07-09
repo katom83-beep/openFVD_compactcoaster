@@ -44,4 +44,18 @@ jobs:
 
     - name: Patch fvd.pro for MSYS2
       run: |
-        sed -i 's|INCLUDEPATH +=
+        python3 -c "
+        content = open('fvd.pro', 'r').read()
+        import re
+        content = re.sub(r'INCLUDEPATH \+= \"C:\\\\Development\\\\Libraries\\\\glew[^\"]*\"', 'INCLUDEPATH += /mingw64/include', content)
+        content = re.sub(r'INCLUDEPATH \+= \"C:\\\\Development\\\\Libraries\\\\glm[^\"]*\"', 'INCLUDEPATH += /mingw64/include', content)
+        content = re.sub(r'INCLUDEPATH \+= \"C:\\\\Development\\\\Libraries\\\\lib3ds[^\"]*\"', 'INCLUDEPATH += /mingw64/include', content)
+        content = re.sub(r'LIBS \+= \"C:\\\\Development\\\\Libraries\\\\glew[^\"]*glew32\.lib\"', '', content)
+        content = re.sub(r'LIBS \+= \"C:\\\\Development\\\\Libraries\\\\glew[^\"]*glew32\.dll\"', '', content)
+        content = re.sub(r'LIBS \+= \"C:\\\\Development\\\\Libraries\\\\lib3ds[^\"]*\"', '', content)
+        content = content.replace('-lOpenGL32', '-lopengl32')
+        content = content.replace('-lGlU32', '-lglu32')
+        content += '\nLIBS += -lglew32 -l3ds\n'
+        open('fvd.pro', 'w').write(content)
+        print('fvd.pro patche avec succes')
+        "
