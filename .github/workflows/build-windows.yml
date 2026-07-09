@@ -37,7 +37,8 @@ jobs:
         curl -L "https://github.com/dspinellis/lib3ds/archive/refs/heads/master.zip" -o lib3ds.zip
         unzip lib3ds.zip
         cd lib3ds-master
-        cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/mingw64 -DBUILD_SHARED_LIBS=OFF -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+        autoreconf -fi
+        ./configure --prefix=/mingw64 --disable-shared --enable-static
         make -j4
         make install
 
