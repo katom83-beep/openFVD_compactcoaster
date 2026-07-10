@@ -83,14 +83,31 @@ jobs:
       run: |
         mkdir -p deploy
         cp release/FVD.exe deploy/
-        cp /mingw64/bin/glew32.dll deploy/
-        /mingw64/bin/windeployqt-qt5 --release --no-translations deploy/FVD.exe || true
-        cp background.png metal.png metalnormals.png deploy/
-        cp -r shaders deploy/
-        cp -r sky deploy/
+        # Toutes les DLL MinGW et MSYS2
         cp /mingw64/bin/libgcc_s_seh-1.dll deploy/ || true
         cp /mingw64/bin/libstdc++-6.dll deploy/ || true
         cp /mingw64/bin/libwinpthread-1.dll deploy/ || true
+        cp /mingw64/bin/libicuin78.dll deploy/ || true
+        cp /mingw64/bin/libicuuc78.dll deploy/ || true
+        cp /mingw64/bin/libicudt78.dll deploy/ || true
+        cp /mingw64/bin/libpcre2-16-0.dll deploy/ || true
+        cp /mingw64/bin/libharfbuzz-0.dll deploy/ || true
+        cp /mingw64/bin/libpng16-16.dll deploy/ || true
+        cp /mingw64/bin/libfreetype-6.dll deploy/ || true
+        cp /mingw64/bin/libglib-2.0-0.dll deploy/ || true
+        cp /mingw64/bin/libzstd.dll deploy/ || true
+        cp /mingw64/bin/zlib1.dll deploy/ || true
+        cp /mingw64/bin/libbz2-1.dll deploy/ || true
+        cp /mingw64/bin/libgraphite2.dll deploy/ || true
+        cp /mingw64/bin/libintl-8.dll deploy/ || true
+        cp /mingw64/bin/libiconv-2.dll deploy/ || true
+        cp /mingw64/bin/glew32.dll deploy/ || true
+        # Copier toutes les DLL Qt détectées par windeployqt
+        /mingw64/bin/windeployqt-qt5 --release --no-translations deploy/FVD.exe || true
+        # Ressources
+        cp background.png metal.png metalnormals.png deploy/
+        cp -r shaders deploy/
+        cp -r sky deploy/
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
