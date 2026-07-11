@@ -1256,7 +1256,7 @@ void trackMesh::buildMeshes(int fromNode)
     case monorail450:
         numRails = 0;
         railSpacing = 0.225f;
-        crosstieSpacing = 0.05f;
+        crosstieSpacing = 0.3f;
         spineHeight = 0.341f * (trackData->fHeart < 0 ? -1.f : 1.f);
         spineSize = 0.005f;
         break;
@@ -1422,6 +1422,24 @@ void trackMesh::buildMeshes(int fromNode)
             break;
         case monorail450:
             options.clear();
+            // Quille gauche (diagonale continue)
+            temp.edges = 4;
+            temp.offset.x = -0.150f;
+            temp.offset.y = -trackData->fHeart - 0.090f;
+            temp.radius.x = 0.005f;
+            temp.radius.y = 0.005f;
+            temp.smooth = false;
+            options.append(temp);
+            // Quille droite (diagonale continue)
+            temp.offset.x = 0.150f;
+            options.append(temp);
+            // Plat fond quille
+            temp.edges = 4;
+            temp.offset.x = 0.0f;
+            temp.offset.y = -trackData->fHeart - 0.341f;
+            temp.radius.x = 0.005f;
+            temp.radius.y = 0.005f;
+            options.append(temp);
             break;
         }
 
