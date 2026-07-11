@@ -2128,134 +2128,125 @@ void trackMesh::buildMeshes(int fromNode)
 
             case monorail450:
             {
-                // Monorail 450mm mécano-soudé — profil en V inversé
-                // vRelPos(y_vertical, x_lateral, z_longitudinal)
-                // Y positif = vers le haut par rapport à la heartline
-                // Toutes cotes en mètres
-                //
-                //  fHeart = hauteur de la heartline (valeur positive = heartline au-dessus du rail)
-                //  sign   = direction verticale (rail dessous = +1, rail dessus inversé = -1)
-
-                float sign = (trackData->fHeart < 0 ? -1.f : 1.f);
                 float H = trackData->fHeart;
 
-                // ── TABLE SUPÉRIEURE 16mm ─────────────────────────────────────
-                P1 = curNode->vRelPos(-H + 0.016f*sign, -0.225f, -0.15f);
-                P2 = curNode->vRelPos(-H + 0.016f*sign, -0.225f,  0.15f);
-                P3 = curNode->vRelPos(-H,               -0.225f, -0.15f);
-                P4 = curNode->vRelPos(-H,               -0.225f,  0.15f);
-                P5 = curNode->vRelPos(-H + 0.016f*sign,  0.225f, -0.15f);
-                P6 = curNode->vRelPos(-H + 0.016f*sign,  0.225f,  0.15f);
-                P7 = curNode->vRelPos(-H,                0.225f, -0.15f);
-                P8 = curNode->vRelPos(-H,                0.225f,  0.15f);
+                // TABLE SUPÉRIEURE 16mm
+                P1 = curNode->vRelPos(-H + 0.016f*mysign, -0.225f, -0.15f);
+                P2 = curNode->vRelPos(-H + 0.016f*mysign, -0.225f,  0.15f);
+                P3 = curNode->vRelPos(-H,                 -0.225f, -0.15f);
+                P4 = curNode->vRelPos(-H,                 -0.225f,  0.15f);
+                P5 = curNode->vRelPos(-H + 0.016f*mysign,  0.225f, -0.15f);
+                P6 = curNode->vRelPos(-H + 0.016f*mysign,  0.225f,  0.15f);
+                P7 = curNode->vRelPos(-H,                  0.225f, -0.15f);
+                P8 = curNode->vRelPos(-H,                  0.225f,  0.15f);
                 createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
                 createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
 
-                // ── ÂME EXTÉRIEURE GAUCHE 10mm × 74mm ────────────────────────
-                P1 = curNode->vRelPos(-H - 0.090f*sign, -0.225f, -0.15f);
-                P2 = curNode->vRelPos(-H - 0.090f*sign, -0.225f,  0.15f);
-                P3 = curNode->vRelPos(-H - 0.016f*sign, -0.225f, -0.15f);
-                P4 = curNode->vRelPos(-H - 0.016f*sign, -0.225f,  0.15f);
-                P5 = curNode->vRelPos(-H - 0.090f*sign, -0.216f, -0.15f);
-                P6 = curNode->vRelPos(-H - 0.090f*sign, -0.216f,  0.15f);
-                P7 = curNode->vRelPos(-H - 0.016f*sign, -0.216f, -0.15f);
-                P8 = curNode->vRelPos(-H - 0.016f*sign, -0.216f,  0.15f);
+                // ÂME EXTÉRIEURE GAUCHE
+                P1 = curNode->vRelPos(-H - 0.090f*mysign, -0.225f, -0.15f);
+                P2 = curNode->vRelPos(-H - 0.090f*mysign, -0.225f,  0.15f);
+                P3 = curNode->vRelPos(-H - 0.016f*mysign, -0.225f, -0.15f);
+                P4 = curNode->vRelPos(-H - 0.016f*mysign, -0.225f,  0.15f);
+                P5 = curNode->vRelPos(-H - 0.090f*mysign, -0.216f, -0.15f);
+                P6 = curNode->vRelPos(-H - 0.090f*mysign, -0.216f,  0.15f);
+                P7 = curNode->vRelPos(-H - 0.016f*mysign, -0.216f, -0.15f);
+                P8 = curNode->vRelPos(-H - 0.016f*mysign, -0.216f,  0.15f);
                 createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
                 createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
 
-                // ── ÂME EXTÉRIEURE DROITE 10mm × 74mm ────────────────────────
-                P1 = curNode->vRelPos(-H - 0.090f*sign,  0.216f, -0.15f);
-                P2 = curNode->vRelPos(-H - 0.090f*sign,  0.216f,  0.15f);
-                P3 = curNode->vRelPos(-H - 0.016f*sign,  0.216f, -0.15f);
-                P4 = curNode->vRelPos(-H - 0.016f*sign,  0.216f,  0.15f);
-                P5 = curNode->vRelPos(-H - 0.090f*sign,  0.225f, -0.15f);
-                P6 = curNode->vRelPos(-H - 0.090f*sign,  0.225f,  0.15f);
-                P7 = curNode->vRelPos(-H - 0.016f*sign,  0.225f, -0.15f);
-                P8 = curNode->vRelPos(-H - 0.016f*sign,  0.225f,  0.15f);
+                // ÂME EXTÉRIEURE DROITE
+                P1 = curNode->vRelPos(-H - 0.090f*mysign,  0.216f, -0.15f);
+                P2 = curNode->vRelPos(-H - 0.090f*mysign,  0.216f,  0.15f);
+                P3 = curNode->vRelPos(-H - 0.016f*mysign,  0.216f, -0.15f);
+                P4 = curNode->vRelPos(-H - 0.016f*mysign,  0.216f,  0.15f);
+                P5 = curNode->vRelPos(-H - 0.090f*mysign,  0.225f, -0.15f);
+                P6 = curNode->vRelPos(-H - 0.090f*mysign,  0.225f,  0.15f);
+                P7 = curNode->vRelPos(-H - 0.016f*mysign,  0.225f, -0.15f);
+                P8 = curNode->vRelPos(-H - 0.016f*mysign,  0.225f,  0.15f);
                 createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
                 createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
 
-                // ── SEMELLE ANTI-SOULÈVEMENT GAUCHE 10mm ─────────────────────
-                P1 = curNode->vRelPos(-H - 0.100f*sign, -0.225f, -0.15f);
-                P2 = curNode->vRelPos(-H - 0.100f*sign, -0.225f,  0.15f);
-                P3 = curNode->vRelPos(-H - 0.090f*sign, -0.225f, -0.15f);
-                P4 = curNode->vRelPos(-H - 0.090f*sign, -0.225f,  0.15f);
-                P5 = curNode->vRelPos(-H - 0.100f*sign, -0.150f, -0.15f);
-                P6 = curNode->vRelPos(-H - 0.100f*sign, -0.150f,  0.15f);
-                P7 = curNode->vRelPos(-H - 0.090f*sign, -0.150f, -0.15f);
-                P8 = curNode->vRelPos(-H - 0.090f*sign, -0.150f,  0.15f);
+                // SEMELLE GAUCHE
+                P1 = curNode->vRelPos(-H - 0.100f*mysign, -0.225f, -0.15f);
+                P2 = curNode->vRelPos(-H - 0.100f*mysign, -0.225f,  0.15f);
+                P3 = curNode->vRelPos(-H - 0.090f*mysign, -0.225f, -0.15f);
+                P4 = curNode->vRelPos(-H - 0.090f*mysign, -0.225f,  0.15f);
+                P5 = curNode->vRelPos(-H - 0.100f*mysign, -0.150f, -0.15f);
+                P6 = curNode->vRelPos(-H - 0.100f*mysign, -0.150f,  0.15f);
+                P7 = curNode->vRelPos(-H - 0.090f*mysign, -0.150f, -0.15f);
+                P8 = curNode->vRelPos(-H - 0.090f*mysign, -0.150f,  0.15f);
                 createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
                 createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
 
-                // ── SEMELLE ANTI-SOULÈVEMENT DROITE 10mm ─────────────────────
-                P1 = curNode->vRelPos(-H - 0.100f*sign,  0.150f, -0.15f);
-                P2 = curNode->vRelPos(-H - 0.100f*sign,  0.150f,  0.15f);
-                P3 = curNode->vRelPos(-H - 0.090f*sign,  0.150f, -0.15f);
-                P4 = curNode->vRelPos(-H - 0.090f*sign,  0.150f,  0.15f);
-                P5 = curNode->vRelPos(-H - 0.100f*sign,  0.225f, -0.15f);
-                P6 = curNode->vRelPos(-H - 0.100f*sign,  0.225f,  0.15f);
-                P7 = curNode->vRelPos(-H - 0.090f*sign,  0.225f, -0.15f);
-                P8 = curNode->vRelPos(-H - 0.090f*sign,  0.225f,  0.15f);
+                // SEMELLE DROITE
+                P1 = curNode->vRelPos(-H - 0.100f*mysign,  0.150f, -0.15f);
+                P2 = curNode->vRelPos(-H - 0.100f*mysign,  0.150f,  0.15f);
+                P3 = curNode->vRelPos(-H - 0.090f*mysign,  0.150f, -0.15f);
+                P4 = curNode->vRelPos(-H - 0.090f*mysign,  0.150f,  0.15f);
+                P5 = curNode->vRelPos(-H - 0.100f*mysign,  0.225f, -0.15f);
+                P6 = curNode->vRelPos(-H - 0.100f*mysign,  0.225f,  0.15f);
+                P7 = curNode->vRelPos(-H - 0.090f*mysign,  0.225f, -0.15f);
+                P8 = curNode->vRelPos(-H - 0.090f*mysign,  0.225f,  0.15f);
                 createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
                 createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
 
-                // ── RAIDISSEUR GAUCHE 10mm ────────────────────────────────────
-                P1 = curNode->vRelPos(-H - 0.090f*sign, -0.150f, -0.15f);
-                P2 = curNode->vRelPos(-H - 0.090f*sign, -0.150f,  0.15f);
-                P3 = curNode->vRelPos(-H - 0.016f*sign, -0.150f, -0.15f);
-                P4 = curNode->vRelPos(-H - 0.016f*sign, -0.150f,  0.15f);
-                P5 = curNode->vRelPos(-H - 0.090f*sign, -0.141f, -0.15f);
-                P6 = curNode->vRelPos(-H - 0.090f*sign, -0.141f,  0.15f);
-                P7 = curNode->vRelPos(-H - 0.016f*sign, -0.141f, -0.15f);
-                P8 = curNode->vRelPos(-H - 0.016f*sign, -0.141f,  0.15f);
+                // RAIDISSEUR GAUCHE
+                P1 = curNode->vRelPos(-H - 0.090f*mysign, -0.150f, -0.15f);
+                P2 = curNode->vRelPos(-H - 0.090f*mysign, -0.150f,  0.15f);
+                P3 = curNode->vRelPos(-H - 0.016f*mysign, -0.150f, -0.15f);
+                P4 = curNode->vRelPos(-H - 0.016f*mysign, -0.150f,  0.15f);
+                P5 = curNode->vRelPos(-H - 0.090f*mysign, -0.141f, -0.15f);
+                P6 = curNode->vRelPos(-H - 0.090f*mysign, -0.141f,  0.15f);
+                P7 = curNode->vRelPos(-H - 0.016f*mysign, -0.141f, -0.15f);
+                P8 = curNode->vRelPos(-H - 0.016f*mysign, -0.141f,  0.15f);
                 createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
                 createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
 
-                // ── RAIDISSEUR DROIT 10mm ─────────────────────────────────────
-                P1 = curNode->vRelPos(-H - 0.090f*sign,  0.141f, -0.15f);
-                P2 = curNode->vRelPos(-H - 0.090f*sign,  0.141f,  0.15f);
-                P3 = curNode->vRelPos(-H - 0.016f*sign,  0.141f, -0.15f);
-                P4 = curNode->vRelPos(-H - 0.016f*sign,  0.141f,  0.15f);
-                P5 = curNode->vRelPos(-H - 0.090f*sign,  0.150f, -0.15f);
-                P6 = curNode->vRelPos(-H - 0.090f*sign,  0.150f,  0.15f);
-                P7 = curNode->vRelPos(-H - 0.016f*sign,  0.150f, -0.15f);
-                P8 = curNode->vRelPos(-H - 0.016f*sign,  0.150f,  0.15f);
+                // RAIDISSEUR DROIT
+                P1 = curNode->vRelPos(-H - 0.090f*mysign,  0.141f, -0.15f);
+                P2 = curNode->vRelPos(-H - 0.090f*mysign,  0.141f,  0.15f);
+                P3 = curNode->vRelPos(-H - 0.016f*mysign,  0.141f, -0.15f);
+                P4 = curNode->vRelPos(-H - 0.016f*mysign,  0.141f,  0.15f);
+                P5 = curNode->vRelPos(-H - 0.090f*mysign,  0.150f, -0.15f);
+                P6 = curNode->vRelPos(-H - 0.090f*mysign,  0.150f,  0.15f);
+                P7 = curNode->vRelPos(-H - 0.016f*mysign,  0.150f, -0.15f);
+                P8 = curNode->vRelPos(-H - 0.016f*mysign,  0.150f,  0.15f);
                 createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
                 createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
 
-                // ── TÔLE QUILLE GAUCHE (diagonale, 10mm épaisseur) ───────────
-                P1 = curNode->vRelPos(-H - 0.341f*sign, -0.005f, -0.15f);
-                P2 = curNode->vRelPos(-H - 0.341f*sign, -0.005f,  0.15f);
-                P3 = curNode->vRelPos(-H - 0.090f*sign, -0.150f, -0.15f);
-                P4 = curNode->vRelPos(-H - 0.090f*sign, -0.150f,  0.15f);
-                P5 = curNode->vRelPos(-H - 0.331f*sign, -0.005f, -0.15f);
-                P6 = curNode->vRelPos(-H - 0.331f*sign, -0.005f,  0.15f);
-                P7 = curNode->vRelPos(-H - 0.090f*sign, -0.141f, -0.15f);
-                P8 = curNode->vRelPos(-H - 0.090f*sign, -0.141f,  0.15f);
+                // QUILLE GAUCHE
+                P1 = curNode->vRelPos(-H - 0.341f*mysign, -0.005f, -0.15f);
+                P2 = curNode->vRelPos(-H - 0.341f*mysign, -0.005f,  0.15f);
+                P3 = curNode->vRelPos(-H - 0.090f*mysign, -0.150f, -0.15f);
+                P4 = curNode->vRelPos(-H - 0.090f*mysign, -0.150f,  0.15f);
+                P5 = curNode->vRelPos(-H - 0.331f*mysign, -0.005f, -0.15f);
+                P6 = curNode->vRelPos(-H - 0.331f*mysign, -0.005f,  0.15f);
+                P7 = curNode->vRelPos(-H - 0.090f*mysign, -0.141f, -0.15f);
+                P8 = curNode->vRelPos(-H - 0.090f*mysign, -0.141f,  0.15f);
                 createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
                 createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
 
-                // ── TÔLE QUILLE DROITE (diagonale, 10mm épaisseur) ───────────
-                P1 = curNode->vRelPos(-H - 0.090f*sign,  0.141f, -0.15f);
-                P2 = curNode->vRelPos(-H - 0.090f*sign,  0.141f,  0.15f);
-                P3 = curNode->vRelPos(-H - 0.341f*sign,  0.005f, -0.15f);
-                P4 = curNode->vRelPos(-H - 0.341f*sign,  0.005f,  0.15f);
-                P5 = curNode->vRelPos(-H - 0.090f*sign,  0.150f, -0.15f);
-                P6 = curNode->vRelPos(-H - 0.090f*sign,  0.150f,  0.15f);
-                P7 = curNode->vRelPos(-H - 0.331f*sign,  0.005f, -0.15f);
-                P8 = curNode->vRelPos(-H - 0.331f*sign,  0.005f,  0.15f);
+                // QUILLE DROITE
+                P1 = curNode->vRelPos(-H - 0.090f*mysign,  0.141f, -0.15f);
+                P2 = curNode->vRelPos(-H - 0.090f*mysign,  0.141f,  0.15f);
+                P3 = curNode->vRelPos(-H - 0.341f*mysign,  0.005f, -0.15f);
+                P4 = curNode->vRelPos(-H - 0.341f*mysign,  0.005f,  0.15f);
+                P5 = curNode->vRelPos(-H - 0.090f*mysign,  0.150f, -0.15f);
+                P6 = curNode->vRelPos(-H - 0.090f*mysign,  0.150f,  0.15f);
+                P7 = curNode->vRelPos(-H - 0.331f*mysign,  0.005f, -0.15f);
+                P8 = curNode->vRelPos(-H - 0.331f*mysign,  0.005f,  0.15f);
                 createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
                 createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
 
-                // ── PLAT DE FOND QUILLE 10×10mm ──────────────────────────────
-                P1 = curNode->vRelPos(-H - 0.341f*sign, -0.005f, -0.15f);
-                P2 = curNode->vRelPos(-H - 0.341f*sign, -0.005f,  0.15f);
-                P3 = curNode->vRelPos(-H - 0.331f*sign, -0.005f, -0.15f);
-                P4 = curNode->vRelPos(-H - 0.331f*sign, -0.005f,  0.15f);
-                P5 = curNode->vRelPos(-H - 0.341f*sign,  0.005f, -0.15f);
-                P6 = curNode->vRelPos(-H - 0.341f*sign,  0.005f,  0.15f);
-                P7 = curNode->vRelPos(-H - 0.331f*sign,  0.005f, -0.15f);
-                P8 = curNode->vRelPos(-H - 0.331f*sign,  0.005f,  0.15f);
+                // PLAT FOND QUILLE
+                P1 = curNode->vRelPos(-H - 0.341f*mysign, -0.005f, -0.15f);
+                P2 = curNode->vRelPos(-H - 0.341f*mysign, -0.005f,  0.15f);
+                P3 = curNode->vRelPos(-H - 0.331f*mysign, -0.005f, -0.15f);
+                P4 = curNode->vRelPos(-H - 0.331f*mysign, -0.005f,  0.15f);
+                P5 = curNode->vRelPos(-H - 0.341f*mysign,  0.005f, -0.15f);
+                P6 = curNode->vRelPos(-H - 0.341f*mysign,  0.005f,  0.15f);
+                P7 = curNode->vRelPos(-H - 0.331f*mysign,  0.005f, -0.15f);
+                P8 = curNode->vRelPos(-H - 0.331f*mysign,  0.005f,  0.15f);
                 createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
                 createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
 
