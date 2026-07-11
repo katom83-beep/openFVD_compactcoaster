@@ -83,27 +83,33 @@ jobs:
       run: |
         mkdir -p deploy
         cp release/FVD.exe deploy/
-        # Toutes les DLL MinGW et MSYS2
-        cp /mingw64/bin/libgcc_s_seh-1.dll deploy/ || true
-        cp /mingw64/bin/libstdc++-6.dll deploy/ || true
-        cp /mingw64/bin/libwinpthread-1.dll deploy/ || true
-        cp /mingw64/bin/libicuin78.dll deploy/ || true
-        cp /mingw64/bin/libicuuc78.dll deploy/ || true
-        cp /mingw64/bin/libicudt78.dll deploy/ || true
-        cp /mingw64/bin/libpcre2-16-0.dll deploy/ || true
-        cp /mingw64/bin/libharfbuzz-0.dll deploy/ || true
-        cp /mingw64/bin/libpng16-16.dll deploy/ || true
-        cp /mingw64/bin/libfreetype-6.dll deploy/ || true
-        cp /mingw64/bin/libglib-2.0-0.dll deploy/ || true
-        cp /mingw64/bin/libzstd.dll deploy/ || true
-        cp /mingw64/bin/zlib1.dll deploy/ || true
-        cp /mingw64/bin/libbz2-1.dll deploy/ || true
-        cp /mingw64/bin/libgraphite2.dll deploy/ || true
-        cp /mingw64/bin/libintl-8.dll deploy/ || true
-        cp /mingw64/bin/libiconv-2.dll deploy/ || true
-        cp /mingw64/bin/glew32.dll deploy/ || true
-        # Copier toutes les DLL Qt détectées par windeployqt
+        # Copier toutes les DLL Qt
         /mingw64/bin/windeployqt-qt5 --release --no-translations deploy/FVD.exe || true
+        # Détecter et copier automatiquement toutes les DLL manquantes
+        python3 -c "
+        import subprocess, shutil, os, re
+        deploy = 'deploy'
+        checked = set()
+        queue = ['deploy/FVD.exe']
+        while queue:
+            exe = queue.pop()
+            if exe in checked:
+                continue
+            checked.add(exe)
+            try:
+                out = subprocess.check_output(['objdump', '-p', exe], stderr=subprocess.DEVNULL).decode()
+            except:
+                continue
+            for dll in re.findall(r'DLL Name: (.+)', out):
+                dll = dll.strip()
+                src = f'/mingw64/bin/{dll}'
+                dst = f'{deploy}/{dll}'
+                if os.path.exists(src) and not os.path.exists(dst):
+                    print(f'Copie: {dll}')
+                    shutil.copy(src, dst)
+                    queue.append(dst)
+        print('Toutes les DLL copiées')
+        "
         # Ressources
         cp background.png metal.png metalnormals.png deploy/
         cp -r shaders deploy/
