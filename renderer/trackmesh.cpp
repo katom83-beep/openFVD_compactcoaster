@@ -1421,7 +1421,7 @@ void trackMesh::buildMeshes(int fromNode)
             options.append(temp);
             break;
         case monorail450:
-            // Pas de rail tubulaire : le profil est entièrement dessiné via createBox
+            options.clear();
             break;
         }
 
