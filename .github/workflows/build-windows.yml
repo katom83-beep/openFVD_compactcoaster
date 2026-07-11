@@ -82,19 +82,31 @@ jobs:
     - name: Collect files
       run: |
         mkdir -p deploy
+        # Exécutable
         cp release/FVD.exe deploy/
-        # Copier TOUTES les DLL de mingw64 (on fait le tri après)
-        cp /mingw64/bin/*.dll deploy/
-        # Copier toutes les DLL Qt
+        # Toutes les DLL système
+        cp /mingw64/bin/*.dll deploy/ || true
+        # Plugins Qt
         /mingw64/bin/windeployqt-qt5 --release --no-translations deploy/FVD.exe || true
-        # Plugin Qt platform Windows (obligatoire)
         mkdir -p deploy/platforms
         cp /mingw64/share/qt5/plugins/platforms/qwindows.dll deploy/platforms/ || true
-        cp /mingw64/share/qt5/plugins/platforms/qdirect2d.dll deploy/platforms/ || true
-        # Ressources
-        cp background.png metal.png metalnormals.png deploy/
-        cp -r shaders deploy/
-        cp -r sky deploy/
+        mkdir -p deploy/imageformats
+        cp /mingw64/share/qt5/plugins/imageformats/*.dll deploy/imageformats/ || true
+        mkdir -p deploy/iconengines
+        cp /mingw64/share/qt5/plugins/iconengines/*.dll deploy/iconengines/ || true
+        mkdir -p deploy/printsupport
+        cp /mingw64/share/qt5/plugins/printsupport/*.dll deploy/printsupport/ || true
+        mkdir -p deploy/styles
+        cp /mingw64/share/qt5/plugins/styles/*.dll deploy/styles/ || true
+        # Ressources FVD++
+        cp background.png metal.png metalnormals.png deploy/ || true
+        cp -r shaders deploy/ || true
+        cp -r sky deploy/ || true
+        # Dossiers source (pour référence)
+        cp -r core deploy/ || true
+        cp -r renderer deploy/ || true
+        cp -r ui deploy/ || true
+        cp fvd.pro deploy/ || true
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
