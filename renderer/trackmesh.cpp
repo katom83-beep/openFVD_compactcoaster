@@ -1256,7 +1256,7 @@ void trackMesh::buildMeshes(int fromNode)
     case monorail450:
         numRails = 0;
         railSpacing = 0.225f;
-        crosstieSpacing = 0.02f;
+        crosstieSpacing = 0.3f;
         spineHeight = 0.341f * (trackData->fHeart < 0 ? -1.f : 1.f);
         spineSize = 0.005f;
         break;
