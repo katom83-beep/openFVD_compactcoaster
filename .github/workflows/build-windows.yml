@@ -87,6 +87,10 @@ jobs:
         cp /mingw64/bin/*.dll deploy/
         # Copier toutes les DLL Qt
         /mingw64/bin/windeployqt-qt5 --release --no-translations deploy/FVD.exe || true
+        # Plugin Qt platform Windows (obligatoire)
+        mkdir -p deploy/platforms
+        cp /mingw64/share/qt5/plugins/platforms/qwindows.dll deploy/platforms/ || true
+        cp /mingw64/share/qt5/plugins/platforms/qdirect2d.dll deploy/platforms/ || true
         # Ressources
         cp background.png metal.png metalnormals.png deploy/
         cp -r shaders deploy/
