@@ -1422,13 +1422,13 @@ void trackMesh::buildMeshes(int fromNode)
             break;
         case monorail450:
             options.clear();
-            // Table supérieure - bord gauche
+            // Table supérieure bord gauche
             temp.edges = 4; temp.smooth = false;
             temp.offset.x = -0.225f;
             temp.offset.y = -trackData->fHeart + 0.008f;
             temp.radius.x = 0.008f; temp.radius.y = 0.008f;
             options.append(temp);
-            // Table supérieure - bord droit
+            // Table supérieure bord droit
             temp.offset.x = 0.225f;
             options.append(temp);
             // Âme gauche
@@ -1438,14 +1438,6 @@ void trackMesh::buildMeshes(int fromNode)
             options.append(temp);
             // Âme droite
             temp.offset.x = 0.225f;
-            options.append(temp);
-            // Quille gauche
-            temp.offset.x = -0.075f;
-            temp.offset.y = -trackData->fHeart - 0.215f;
-            temp.radius.x = 0.005f; temp.radius.y = 0.130f;
-            options.append(temp);
-            // Quille droite
-            temp.offset.x = 0.075f;
             options.append(temp);
             break;
         }
