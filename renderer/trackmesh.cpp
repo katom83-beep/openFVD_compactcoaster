@@ -2839,32 +2839,49 @@ void trackMesh::build3ds(const int _sec, QVector<float> *_vertices, QVector<unsi
     case monorail450:
         // Vider les rails ronds par défaut
         options.clear();
-        // Table supérieure (dalle plate 450mm × 16mm)
+        // Bord gauche table supérieure
         temp.edges = 4; temp.smooth = false;
-        temp.offset.x = 0.0f;
-        temp.offset.y = -trackData->fHeart + 0.008f;
-        temp.radius.x = 0.225f;
+        temp.offset.x = -0.225f;
+        temp.offset.y = -trackData->fHeart;
+        temp.radius.x = 0.005f;
         temp.radius.y = 0.008f;
         options.append(temp);
-        // Âme extérieure gauche (10mm × 74mm)
+        // Bord droit table supérieure
+        temp.offset.x = 0.225f;
+        options.append(temp);
+        // Centre table (pour remplir la dalle)
+        temp.offset.x = 0.0f;
+        temp.radius.x = 0.220f;
+        temp.radius.y = 0.005f;
+        options.append(temp);
+        // Âme extérieure gauche
         temp.edges = 4; temp.smooth = false;
         temp.offset.x = -0.2205f;
         temp.offset.y = -trackData->fHeart - 0.053f;
-        temp.radius.x = 0.0045f;
+        temp.radius.x = 0.005f;
         temp.radius.y = 0.037f;
         options.append(temp);
         // Âme extérieure droite
         temp.offset.x = 0.2205f;
         options.append(temp);
-        // Quille gauche (diagonale en V)
+        // Bord gauche quille
         temp.edges = 4; temp.smooth = false;
-        temp.offset.x = -0.0775f;
-        temp.offset.y = -trackData->fHeart - 0.2155f;
+        temp.offset.x = -0.150f;
+        temp.offset.y = -trackData->fHeart - 0.090f;
         temp.radius.x = 0.005f;
-        temp.radius.y = 0.1295f;
+        temp.radius.y = 0.005f;
         options.append(temp);
-        // Quille droite
-        temp.offset.x = 0.0775f;
+        // Bord droit quille
+        temp.offset.x = 0.150f;
+        options.append(temp);
+        // Pointe quille gauche
+        temp.offset.x = -0.005f;
+        temp.offset.y = -trackData->fHeart - 0.341f;
+        temp.radius.x = 0.005f;
+        temp.radius.y = 0.005f;
+        options.append(temp);
+        // Pointe quille droite
+        temp.offset.x = 0.005f;
         options.append(temp);
         break;
     }
