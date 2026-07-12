@@ -2334,6 +2334,14 @@ void trackMesh::buildMeshes(int fromNode)
                 nextPos = curNode->vRelPos(-trackData->fHeart-0.45f-spineHeight, 0);
                 appendTrackNode(rails);
                 break;
+            case monorail450:
+                // Table supérieure
+                nextPos = curNode->vRelPos(-trackData->fHeart + 0.008f, 0);
+                appendTrackNode(rails);
+                // Pointe quille
+                nextPos = curNode->vRelPos(-trackData->fHeart - 0.341f, 0);
+                appendTrackNode(rails);
+                break;
             }
         }
 
@@ -2827,6 +2835,38 @@ void trackMesh::build3ds(const int _sec, QVector<float> *_vertices, QVector<unsi
         options.append(temp);
         temp.offset.y = -trackData->fHeart-0.45f-spineHeight;
         options.append(temp);
+        break;
+    case monorail450:
+        // Vider les rails ronds par défaut
+        options.clear();
+        // Table supérieure (dalle plate 450mm × 16mm)
+        temp.edges = 4; temp.smooth = false;
+        temp.offset.x = 0.0f;
+        temp.offset.y = -trackData->fHeart + 0.008f;
+        temp.radius.x = 0.225f;
+        temp.radius.y = 0.008f;
+        options.append(temp);
+        // Âme extérieure gauche (10mm × 74mm)
+        temp.edges = 4; temp.smooth = false;
+        temp.offset.x = -0.2205f;
+        temp.offset.y = -trackData->fHeart - 0.053f;
+        temp.radius.x = 0.0045f;
+        temp.radius.y = 0.037f;
+        options.append(temp);
+        // Âme extérieure droite
+        temp.offset.x = 0.2205f;
+        options.append(temp);
+        // Quille gauche (diagonale en V)
+        temp.edges = 4; temp.smooth = false;
+        temp.offset.x = -0.0775f;
+        temp.offset.y = -trackData->fHeart - 0.2155f;
+        temp.radius.x = 0.005f;
+        temp.radius.y = 0.1295f;
+        options.append(temp);
+        // Quille droite
+        temp.offset.x = 0.0775f;
+        options.append(temp);
+        break;
     }
 
     create3dsPipes(_vertices, options);
