@@ -2837,51 +2837,65 @@ void trackMesh::build3ds(const int _sec, QVector<float> *_vertices, QVector<unsi
         options.append(temp);
         break;
     case monorail450:
-        // Vider les rails ronds par défaut
         options.clear();
-        // Bord gauche table supérieure
+        // ── TABLE SUPÉRIEURE (dalle plate 450mm × 16mm) ──────────────────
+        // Remplissage de la dalle avec des tubes plats très larges
         temp.edges = 4; temp.smooth = false;
-        temp.offset.x = -0.225f;
-        temp.offset.y = -trackData->fHeart;
-        temp.radius.x = 0.005f;
+        temp.offset.x = 0.0f;
+        temp.offset.y = -trackData->fHeart - 0.008f;
+        temp.radius.x = 0.225f;
         temp.radius.y = 0.008f;
         options.append(temp);
-        // Bord droit table supérieure
-        temp.offset.x = 0.225f;
-        options.append(temp);
-        // Centre table (pour remplir la dalle)
-        temp.offset.x = 0.0f;
-        temp.radius.x = 0.220f;
-        temp.radius.y = 0.005f;
-        options.append(temp);
-        // Âme extérieure gauche
+        // ── ÂMES EXTÉRIEURES (10mm × 74mm) ───────────────────────────────
         temp.edges = 4; temp.smooth = false;
         temp.offset.x = -0.2205f;
         temp.offset.y = -trackData->fHeart - 0.053f;
         temp.radius.x = 0.005f;
         temp.radius.y = 0.037f;
         options.append(temp);
-        // Âme extérieure droite
         temp.offset.x = 0.2205f;
         options.append(temp);
-        // Bord gauche quille
+        // ── SEMELLES (10mm × 75mm) ────────────────────────────────────────
         temp.edges = 4; temp.smooth = false;
-        temp.offset.x = -0.150f;
-        temp.offset.y = -trackData->fHeart - 0.090f;
-        temp.radius.x = 0.005f;
+        temp.offset.x = -0.1875f;
+        temp.offset.y = -trackData->fHeart - 0.095f;
+        temp.radius.x = 0.0375f;
         temp.radius.y = 0.005f;
         options.append(temp);
-        // Bord droit quille
-        temp.offset.x = 0.150f;
+        temp.offset.x = 0.1875f;
         options.append(temp);
-        // Pointe quille gauche
-        temp.offset.x = -0.005f;
-        temp.offset.y = -trackData->fHeart - 0.341f;
+        // ── QUILLE GAUCHE : 5 tubes qui remplissent la diagonale ─────────
+        // En allant de (x=-0.150, y=-0.090) vers (x=0, y=-0.341)
+        // On divise en 5 segments et on met un tube plat à chaque position
+        temp.edges = 4; temp.smooth = false;
+        temp.offset.x = -0.120f; temp.offset.y = -trackData->fHeart - 0.140f;
+        temp.radius.x = 0.005f; temp.radius.y = 0.055f;
+        options.append(temp);
+        temp.offset.x = -0.090f; temp.offset.y = -trackData->fHeart - 0.190f;
+        temp.radius.x = 0.005f; temp.radius.y = 0.055f;
+        options.append(temp);
+        temp.offset.x = -0.060f; temp.offset.y = -trackData->fHeart - 0.240f;
+        temp.radius.x = 0.005f; temp.radius.y = 0.055f;
+        options.append(temp);
+        temp.offset.x = -0.030f; temp.offset.y = -trackData->fHeart - 0.290f;
+        temp.radius.x = 0.005f; temp.radius.y = 0.055f;
+        options.append(temp);
+        // ── QUILLE DROITE : 5 tubes miroir ───────────────────────────────
+        temp.offset.x = 0.120f; temp.offset.y = -trackData->fHeart - 0.140f;
+        temp.radius.x = 0.005f; temp.radius.y = 0.055f;
+        options.append(temp);
+        temp.offset.x = 0.090f; temp.offset.y = -trackData->fHeart - 0.190f;
+        options.append(temp);
+        temp.offset.x = 0.060f; temp.offset.y = -trackData->fHeart - 0.240f;
+        options.append(temp);
+        temp.offset.x = 0.030f; temp.offset.y = -trackData->fHeart - 0.290f;
+        options.append(temp);
+        // ── POINTE QUILLE (plat fond 10mm) ───────────────────────────────
+        temp.edges = 4; temp.smooth = false;
+        temp.offset.x = 0.0f;
+        temp.offset.y = -trackData->fHeart - 0.336f;
         temp.radius.x = 0.005f;
         temp.radius.y = 0.005f;
-        options.append(temp);
-        // Pointe quille droite
-        temp.offset.x = 0.005f;
         options.append(temp);
         break;
     }
