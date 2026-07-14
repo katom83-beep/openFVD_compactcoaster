@@ -1256,7 +1256,7 @@ void trackMesh::buildMeshes(int fromNode)
     case monorail450:
         numRails = 0;
         railSpacing = 0.225f;
-        crosstieSpacing = 0.3f;
+        crosstieSpacing = 0.05f;
         spineHeight = 0.341f * (trackData->fHeart < 0 ? -1.f : 1.f);
         spineSize = 0.005f;
         break;
@@ -1520,8 +1520,8 @@ void trackMesh::buildMeshes(int fromNode)
             offset = 2*(crossties.size()/(4*24)) + ((crossties.size()/24)%4)/3;
             break;
         case monorail450:
-            // 10 boîtes × 24 vertices chacune = 240 vertices par raidisseur transversal
-            offset = crossties.size() / 240;
+            // 4 boîtes × 24 vertices = 96 vertices par section
+            offset = crossties.size() / 96;
             break;
         }
 
@@ -2129,7 +2129,7 @@ void trackMesh::buildMeshes(int fromNode)
             case monorail450:
             {
                 float H = trackData->fHeart;
-                // QUILLE GAUCHE
+                // QUILLE GAUCHE (tôle diagonale 10mm)
                 P1 = curNode->vRelPos(-H - 0.341f*mysign, -0.005f, -0.15f);
                 P2 = curNode->vRelPos(-H - 0.341f*mysign, -0.005f,  0.15f);
                 P3 = curNode->vRelPos(-H - 0.090f*mysign, -0.150f, -0.15f);
@@ -2149,28 +2149,6 @@ void trackMesh::buildMeshes(int fromNode)
                 P6 = curNode->vRelPos(-H - 0.090f*mysign,  0.150f,  0.15f);
                 P7 = curNode->vRelPos(-H - 0.331f*mysign,  0.005f, -0.15f);
                 P8 = curNode->vRelPos(-H - 0.331f*mysign,  0.005f,  0.15f);
-                createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
-                createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
-                // SEMELLE GAUCHE
-                P1 = curNode->vRelPos(-H - 0.090f*mysign, -0.225f, -0.15f);
-                P2 = curNode->vRelPos(-H - 0.090f*mysign, -0.225f,  0.15f);
-                P3 = curNode->vRelPos(-H - 0.100f*mysign, -0.225f, -0.15f);
-                P4 = curNode->vRelPos(-H - 0.100f*mysign, -0.225f,  0.15f);
-                P5 = curNode->vRelPos(-H - 0.090f*mysign, -0.150f, -0.15f);
-                P6 = curNode->vRelPos(-H - 0.090f*mysign, -0.150f,  0.15f);
-                P7 = curNode->vRelPos(-H - 0.100f*mysign, -0.150f, -0.15f);
-                P8 = curNode->vRelPos(-H - 0.100f*mysign, -0.150f,  0.15f);
-                createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
-                createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
-                // SEMELLE DROITE
-                P1 = curNode->vRelPos(-H - 0.090f*mysign,  0.150f, -0.15f);
-                P2 = curNode->vRelPos(-H - 0.090f*mysign,  0.150f,  0.15f);
-                P3 = curNode->vRelPos(-H - 0.100f*mysign,  0.150f, -0.15f);
-                P4 = curNode->vRelPos(-H - 0.100f*mysign,  0.150f,  0.15f);
-                P5 = curNode->vRelPos(-H - 0.090f*mysign,  0.225f, -0.15f);
-                P6 = curNode->vRelPos(-H - 0.090f*mysign,  0.225f,  0.15f);
-                P7 = curNode->vRelPos(-H - 0.100f*mysign,  0.225f, -0.15f);
-                P8 = curNode->vRelPos(-H - 0.100f*mysign,  0.225f,  0.15f);
                 createBox(crossties, P1, P2, P3, P4, P5, P6, P7, P8);
                 createShadowBox(crosstieshadows, P1, P2, P3, P4, P5, P6, P7, P8);
                 // RAIDISSEUR GAUCHE
@@ -2838,64 +2816,32 @@ void trackMesh::build3ds(const int _sec, QVector<float> *_vertices, QVector<unsi
         break;
     case monorail450:
         options.clear();
-        // ── TABLE SUPÉRIEURE (dalle plate 450mm × 16mm) ──────────────────
-        // Remplissage de la dalle avec des tubes plats très larges
+        // TABLE SUPÉRIEURE 16mm (450mm de large)
         temp.edges = 4; temp.smooth = false;
         temp.offset.x = 0.0f;
         temp.offset.y = -trackData->fHeart - 0.008f;
         temp.radius.x = 0.225f;
         temp.radius.y = 0.008f;
         options.append(temp);
-        // ── ÂMES EXTÉRIEURES (10mm × 74mm) ───────────────────────────────
+        // ÂME EXTÉRIEURE GAUCHE (10mm × 74mm)
         temp.edges = 4; temp.smooth = false;
         temp.offset.x = -0.2205f;
         temp.offset.y = -trackData->fHeart - 0.053f;
         temp.radius.x = 0.005f;
         temp.radius.y = 0.037f;
         options.append(temp);
+        // ÂME EXTÉRIEURE DROITE
         temp.offset.x = 0.2205f;
         options.append(temp);
-        // ── SEMELLES (10mm × 75mm) ────────────────────────────────────────
+        // SEMELLE ANTI-SOULÈVEMENT GAUCHE (10mm × 75mm)
         temp.edges = 4; temp.smooth = false;
         temp.offset.x = -0.1875f;
         temp.offset.y = -trackData->fHeart - 0.095f;
         temp.radius.x = 0.0375f;
         temp.radius.y = 0.005f;
         options.append(temp);
+        // SEMELLE DROITE
         temp.offset.x = 0.1875f;
-        options.append(temp);
-        // ── QUILLE GAUCHE : 5 tubes qui remplissent la diagonale ─────────
-        // En allant de (x=-0.150, y=-0.090) vers (x=0, y=-0.341)
-        // On divise en 5 segments et on met un tube plat à chaque position
-        temp.edges = 4; temp.smooth = false;
-        temp.offset.x = -0.120f; temp.offset.y = -trackData->fHeart - 0.140f;
-        temp.radius.x = 0.005f; temp.radius.y = 0.055f;
-        options.append(temp);
-        temp.offset.x = -0.090f; temp.offset.y = -trackData->fHeart - 0.190f;
-        temp.radius.x = 0.005f; temp.radius.y = 0.055f;
-        options.append(temp);
-        temp.offset.x = -0.060f; temp.offset.y = -trackData->fHeart - 0.240f;
-        temp.radius.x = 0.005f; temp.radius.y = 0.055f;
-        options.append(temp);
-        temp.offset.x = -0.030f; temp.offset.y = -trackData->fHeart - 0.290f;
-        temp.radius.x = 0.005f; temp.radius.y = 0.055f;
-        options.append(temp);
-        // ── QUILLE DROITE : 5 tubes miroir ───────────────────────────────
-        temp.offset.x = 0.120f; temp.offset.y = -trackData->fHeart - 0.140f;
-        temp.radius.x = 0.005f; temp.radius.y = 0.055f;
-        options.append(temp);
-        temp.offset.x = 0.090f; temp.offset.y = -trackData->fHeart - 0.190f;
-        options.append(temp);
-        temp.offset.x = 0.060f; temp.offset.y = -trackData->fHeart - 0.240f;
-        options.append(temp);
-        temp.offset.x = 0.030f; temp.offset.y = -trackData->fHeart - 0.290f;
-        options.append(temp);
-        // ── POINTE QUILLE (plat fond 10mm) ───────────────────────────────
-        temp.edges = 4; temp.smooth = false;
-        temp.offset.x = 0.0f;
-        temp.offset.y = -trackData->fHeart - 0.336f;
-        temp.radius.x = 0.005f;
-        temp.radius.y = 0.005f;
         options.append(temp);
         break;
     }
